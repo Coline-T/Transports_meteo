@@ -100,3 +100,4 @@ city_name = "Rennes"
 
 # Lancer le processus de récupération toutes les 3 heures
 weather_client.run(city_name, interval_hours=3)
+
