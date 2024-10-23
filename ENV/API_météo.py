@@ -39,7 +39,7 @@ class WeatherClient:
             print(f"Erreur lors de la requête: {e}")
             return None
 
-    def save_weather_to_csv(self, city_name, file_name='weather_data.csv'):
+    def save_weather_to_csv(self, city_name, file_name='weather_data_1.csv'):
         """
         Enregistre les informations météo dans un fichier CSV pour une ville donnée.
         """
