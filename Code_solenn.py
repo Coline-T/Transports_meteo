@@ -89,15 +89,8 @@ class WeatherClient:
 
 # Utilisation de la classe WeatherClient
 
-# Remplace 'TA_CLE_API_ICI' par ta clé API valide
-api_key = "b5db605ccc65331a910de85584bf4351"
-
-# Initialisation du client météo
-weather_client = WeatherClient(api_key)
-
-# Demander à l'utilisateur d'entrer une ville
-city_name = "Rennes"
-
-# Lancer le processus de récupération toutes les 3 heures
-weather_client.run(city_name, interval_hours=3)
+api_key = "b5db605ccc65331a910de85584bf4351"# Code de la clé API
+weather_client = WeatherClient(api_key)# Initialisation du client météo
+city_name = "Rennes"# Nom de la ville
+weather_client.run(city_name, interval_hours=3)# Lancer le processus de récupération toutes les 3 heures
 
