@@ -92,5 +92,5 @@ class WeatherClient:
 api_key = "b5db605ccc65331a910de85584bf4351"# Code de la clé API
 weather_client = WeatherClient(api_key)# Initialisation du client météo
 city_name = "Rennes"# Nom de la ville
-weather_client.run(city_name, interval_hours=3)# Lancer le processus de récupération toutes les 3 heures
+weather_client.run(city_name, interval_hours=1)# Lancer le processus de récupération toutes les heure
 
