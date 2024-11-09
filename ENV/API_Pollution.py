@@ -1,100 +1,90 @@
 import requests
-import csv
-import time
+from dotenv import load_dotenv
 import os
+import json
+from datetime import datetime, timezone
+import pytz
 
-class AirPollutionClient:
-    def __init__(self, api_key):
-        """
-        Initialise le client pollution de l'air avec la clé API.
-        """
+class WeatherFetcher:
+    def __init__(self, cities, api_key, timezone="Europe/Paris"):
+        self.cities = cities
         self.api_key = api_key
-        self.base_url = "http://api.openweathermap.org/data/2.5/air_pollution"
+        self.timezone = pytz.timezone(timezone)
+        self.weather_data = []
 
-    def get_air_pollution_data(self, lat, lon):
-        """
-        Récupère les données de pollution de l'air pour la latitude et longitude spécifiées.
-        """
-        params = {
-            'lat': lat,
-            'lon': lon,
-            'appid': self.api_key
+    def fetch_weather_data(self):
+        """Récupère les données météo pour chaque ville."""
+        for city in self.cities:
+            data = self._get_city_weather(city)
+            if data:
+                self.weather_data.append(data)
+        return self.weather_data
+
+    def _get_city_weather(self, city):
+        """Récupère les données météo pour une ville donnée en utilisant les coordonnées."""
+        # Dictionnaire de coordonnées pour les villes
+        city_coordinates = {
+            "Rennes": (48.1173, -1.6778),
+            # Ajoute d'autres villes si nécessaire
         }
 
-        try:
-            # Effectuer la requête à l'API
-            response = requests.get(self.base_url, params=params)
-            data = response.json()
-
-            # Vérifier si le statut de la réponse est correct (200 signifie succès)
-            if response.status_code == 200:
-                return data
-            else:
-                print(f"Erreur {data['cod']}: {data['message']}")
-                return None
-        except Exception as e:
-            print(f"Erreur lors de la requête: {e}")
+        if city not in city_coordinates:
+            print(f"Les coordonnées pour {city} ne sont pas disponibles.")
             return None
 
-    def save_air_pollution_to_csv(self, lat, lon, city_name, file_name='air_pollution_data.csv'):
-        """
-        Enregistre les informations de pollution de l'air dans un fichier CSV pour une ville donnée.
-        """
-        data = self.get_air_pollution_data(lat, lon)
+        lat, lon = city_coordinates[city]
+        url = f'http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={self.api_key}'
+        response = requests.get(url)
 
-        if data:
-            try:
-                # Extraire les informations de pollution de l'air
-                pollution_data = data['list'][0]['components']
-                aqi = data['list'][0]['main']['aqi']
+        if response.status_code == 200:
+            data = response.json()
+            if 'list' not in data or not data['list']:
+                print(f"Aucune donnée de pollution pour {city}.")
+                return None
 
-                # Vérifier si le fichier existe déjà
-                file_exists = os.path.isfile(file_name)
+            # Récupération des informations nécessaires
+            air_quality_data = data['list'][0]
 
-                # Ouvrir le fichier CSV en mode 'append' pour ajouter les données
-                with open(file_name, mode='a', newline='', encoding='utf-8') as file:
-                    writer = csv.writer(file)
+            # Formatage de la date et heure en format lisible
+            date_time = datetime.fromtimestamp(air_quality_data['dt'], tz=timezone.utc).astimezone(self.timezone).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
 
-                    # Écrire l'en-tête si le fichier est vide ou n'existe pas
-                    if not file_exists:
-                        writer.writerow([
-                            "Ville", "AQI (Indice de qualité de l'air)", "CO (monoxyde de carbone)",
-                            "NO (monoxyde d'azote)", "NO2 (dioxyde d'azote)", "O3 (ozone)",
-                            "SO2 (dioxyde de soufre)", "PM2.5 (particules fines)", "PM10 (grosses particules)", "NH3 (ammoniac)"
-                        ])
-
-                    # Écrire les informations de pollution de l'air dans le fichier CSV
-                    writer.writerow([
-                        city_name, aqi, pollution_data['co'], pollution_data['no'], pollution_data['no2'],
-                        pollution_data['o3'], pollution_data['so2'], pollution_data['pm2_5'], pollution_data['pm10'], pollution_data['nh3']
-                    ])
-
-                print(f"Les données de pollution de l'air pour {city_name} ont été enregistrées dans {file_name}.")
-
-            except KeyError as e:
-                print(f"Données manquantes dans la réponse : {e}")
+            return {
+                "city": city,
+                "date": date_time,
+                "air_quality_index": air_quality_data['main']['aqi'],
+                "components": {
+                    "co": air_quality_data['components']['co'],
+                    "no": air_quality_data['components']['no'],
+                    "no2": air_quality_data['components']['no2'],
+                    "o3": air_quality_data['components']['o3'],
+                    "so2": air_quality_data['components']['so2'],
+                    "pm2_5": air_quality_data['components']['pm2_5'],
+                    "pm10": air_quality_data['components']['pm10'],
+                    "nh3": air_quality_data['components']['nh3']
+                }
+            }
         else:
-            print("Impossible de récupérer les données de pollution de l'air.")
+            print(f"Erreur pour {city}: {response.json().get('message')}")
+            return None
 
-    def run(self, city_name, lat, lon, interval_hours=3):
-        """
-        Exécute la récupération et l'enregistrement des données de pollution de l'air toutes les X heures.
-        """
-        interval_seconds = interval_hours * 3600  # Conversion en secondes
-
-        while True:
-            self.save_air_pollution_to_csv(lat, lon, city_name)
-            print(f"Attente de {interval_hours} heure(s) avant la prochaine récupération...")
-            time.sleep(interval_seconds)  # Attendre l'intervalle spécifié
+    def display_weather_data(self):
+        """Affiche les données météo sous forme de JSON."""
+        print(json.dumps(self.weather_data, indent=4))
 
 
-# Utilisation de la classe AirPollutionClient
+# Chargement de la clé API depuis le fichier .env
+load_dotenv()
+API_KEY = os.getenv('API_KEY_POLLUTION')
 
-api_key = "21cbcb7b2363369d509be3467eecb0ca"  # Nouvelle clé API
-air_pollution_client = AirPollutionClient(api_key)  # Initialisation du client pollution de l'air
-city_name = "Rennes"  # Nom de la ville
-lat = 48.1173  # Latitude de Rennes
-lon = -1.6778  # Longitude de Rennes
-#air_pollution_client.run(city_name, lat, lon, interval_hours=1)  # Lancer le processus de récupération toutes les heures
+# Liste des villes
+cities = [
+    "Rennes",  # Bretagne
+    # Ajoute d'autres villes ici si nécessaire
+]
 
-air_pollution_client.get_air_pollution_data(lat, lon)
+# Créer une instance de WeatherFetcher et récupérer les données météo
+weather_fetcher = WeatherFetcher(cities, API_KEY)
+weather_fetcher.fetch_weather_data()
+weather_fetcher.display_weather_data()
