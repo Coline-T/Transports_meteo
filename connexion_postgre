@@ -1,0 +1,44 @@
+import os
+import psycopg2
+from psycopg2 import sql
+from dotenv import load_dotenv
+
+##Charger les variables d'environnement depuis un fichier .env
+load_dotenv()
+
+DB_USER='postgres'
+DB_PASSWORD='2306'
+DB_HOST='10.101.2.26'
+DB_PORT=5432
+DB_NAME='TPM'
+
+
+##Créer une connexion à la base de données
+try:
+    conn = psycopg2.connect(
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+    print("Connexion réussie à la base de données")
+
+    # Créer un curseur pour exécuter des requêtes
+    cursor = conn.cursor()
+
+    # Exemple de requête pour récupérer des données
+    cursor.execute("SELECT * FROM orders")  # Remplacez 'your_table_name' par le nom de votre table
+    records = cursor.fetchall()
+
+    # Afficher les enregistrements
+    for row in records:
+        print(row)
+
+    # Fermer le curseur et la connexion
+    cursor.close()
+    conn.close()
+    print("Connexion fermée")
+
+except Exception as e:
+    print(f"Erreur de connexion : {e}")
