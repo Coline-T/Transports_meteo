@@ -17,10 +17,6 @@
 ![Kibana](https://img.shields.io/badge/Kibana-8.15.0-orange?logo=kibana&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-5.0-green?logo=mongodb&logoColor=white)
 
-### Analyse des Sentiments & Intelligence Artificielle
-
-![OpenAI API](https://img.shields.io/badge/OpenAI%20API-3.5-green?logo=openai&logoColor=white)
-
 ### Bibliothèques de Données & Machine Learning
 
 ![Pandas](https://img.shields.io/badge/Pandas-1.5.2-brightgreen?logo=pandas&logoColor=white)
@@ -132,25 +128,26 @@ Mes cibles principales incluent :
 
 ### Workflow et Schéma d'Architecture
 
-1. **Ingestion des Données de Contrôles Sanitaires (API Alim'confiance)** :
-   - Extraction des informations sur les établissements et leurs contrôles sanitaires via l'API Alim'confiance, envoi des données dans Kafka.
+1. **Ingestion des Données des transports Rennais** :
+   - Extraction des données sur les transports en commun Rennais via l'API "Etat du trafic en temps réel" disponible sur le site data rennes métropole, envoi des données dans Kafka.
 
-2. **Ingestion des Avis Clients** :
-   - Extraction d'avis clients à partir de sources disponibles (plateformes d'avis ou réseaux sociaux, dans le respect des règles d'utilisation).
-   - Envoi des avis dans Kafka pour une ingestion en flux continu.
+2. **Ingestion des données Météo** :
+   - Extraction des données météo via l'API disponible sur Open Weather Data et envoi des données dans Kafka.
 
-3. **Traitement des Données** :
-   - **Analyse des Sentiments** : Utilisation de l'API OpenAI pour identifier le sentiment général (positif, neutre, négatif) et les sentiments par aspect (qualité de la nourriture, service, ambiance).
-   - **Transformation des Données** : Spark nettoie et enrichit les données, en ajoutant des informations telles que la date, la région, le département et le type d’établissement.
+3. **Ingestion des données de la pollution de l'air** :
+   - Extraction des données de la pollution de l'air via l'API disponible sur Open Weather Data et envoi des données dans Mongo DB.
 
-4. **Indexation et Stockage** :
-   - Les données enrichies sont stockées dans Elasticsearch, indexées par établissement, par date, par région, et par catégorie (avis clients et contrôles sanitaires).
+4. **Traitement des Données** :
+   - **Transformation des Données** : Dans MongoDB, on nettoie et enrichit les données, en ajoutant des informations telles que ...
 
-5. **Visualisation et Analyse** :
-   - Kibana est utilisé pour créer des tableaux de bord interactifs, permettant de suivre la conformité sanitaire et l’expérience client en temps réel.
+5. **Indexation et Stockage** :
+   - Les données enrichies sont stockées dans Elasticsearch, indexées par ...
+
+6. **Visualisation et Analyse** :
+   - Kibana est utilisé pour créer des tableaux de bord interactifs, permettant de suivre l'usage des transports en commun en fonction de la météo et de la pollution de l'air.
 
 ## Fonctionnalités du Projet
-
+A FAIRE !!!
 1. **Suivi des Contrôles Sanitaires**
    - **Objectif** : Fournir une vue d’ensemble des niveaux d’hygiène pour chaque établissement.
    - **Description** : Identifier les établissements avec des niveaux "à corriger de manière urgente" ou "à améliorer" pour cibler les interventions nécessaires.
@@ -201,7 +198,7 @@ MONGO_USERNAME="******"
 MONGO_PASSWORD="******"
 MONGO_DBNAME="*******"
 MONGO_URI="*********"
-API_URL=https://dgal.opendatasoft.com/api/explore/v2.1/catalog/datasets/export_alimconfiance/records
+API_URL=https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/etat-du-trafic-en-temps-reel/records
 OPENAI_API_KEY="*******"
 KAFKA_BROKER=localhost:9092"******"
 KAFKA_TOPIC="*******"
@@ -209,11 +206,11 @@ KAFKA_TOPIC="*******"
 
 ### Sous-Projet : Ingestion et Préparation des Données
 
-Cette partie du projet est un sous-projet spécifique à l'ingestion et à la préparation des données, inclus dans notre projet global intitulé Évaluation de la Qualité et de la Perception des Restaurants. Deux pipelines Kedro ont été mis en place pour gérer ces données et les rendre disponibles pour l'analyse et la visualisation :
+Cette partie du projet est un sous-projet spécifique à l'ingestion et à la préparation des données, inclus dans notre projet global Transports_Meteo. Deux pipelines Kedro ont été mis en place pour gérer ces données et les rendre disponibles pour l'analyse et la visualisation :
 
 #### Pipeline ETL
 
-Ce pipeline collecte les données brutes à partir de l'API Alim'confiance, les transforme via des étapes de nettoyage et d'enrichissement, puis les stocke dans une base de données MongoDB. Le stockage dans MongoDB permet de centraliser les données transformées pour une utilisation ultérieure, facilitant ainsi les opérations d'analyse et de visualisation.
+Ce pipeline collecte les données brutes à partir de l'API, les transforme via des étapes de nettoyage et d'enrichissement, puis les stocke dans une base de données MongoDB. Le stockage dans MongoDB permet de centraliser les données transformées pour une utilisation ultérieure, facilitant ainsi les opérations d'analyse et de visualisation.
 
 ![alt text](image-4.png)
 
@@ -223,31 +220,15 @@ Ce pipeline collecte les données brutes à partir de l'API Alim'confiance, les 
    kedro run
    ```
 
-#### Pipeline d'Ingestion des Avis Clients
-
-Ce pipeline charge les données à partir de Spark, les fusionne pour créer un ensemble de données cohérent, puis les stocke dans Elasticsearch. Le stockage dans Elasticsearch facilite l'indexation des données et leur visualisation ultérieure, en offrant une recherche rapide et efficace pour l'évaluation des avis clients.
-
-
-
-
-
-
 ### Extraction et Ingestion
-   - **Données de l’API Alim'confiance** : Extraction des données sanitaires avec Python et envoi dans Kafka.
-   - **Avis clients** : Extraction et validation de conformité des données d'avis, envoi dans Kafka.
-
-### Traitement avec Spark
-   - **Analyse des sentiments** : Utilisation de l'API OpenAI pour analyser les sentiments des avis clients.
-   - **Enrichissement** : Ajout d'informations temporelles et géographiques aux données sanitaires et aux avis clients.
+   - **Données des différents API** : Extraction des données sanitaires avec Python et envoi dans Kafka.
 
 ### Stockage et Indexation avec Elasticsearch
-   - Stockage des données d’établissement, des niveaux d’hygiène et des avis clients dans Elasticsearch.
+   - Stockage des données des transports rennais, des données météo et des données de la pollution de l'air dans Elasticsearch.
 
 ### Visualisation avec Kibana
    - Création de tableaux de bord pour :
-     - Suivre la répartition des niveaux d’hygiène.
-     - Visualiser les sentiments des clients.
-     - Suivre les corrélations et les tendances.
+     - ...
 
 ## Analyses et Indicateurs Attendus
 
@@ -317,7 +298,8 @@ j'ai documenté plusieurs étapes critiques du projet :
 
 ## Contributeurs
 
-- Alimou DIALLO (@santoudllo): Data engineer -**alimousantou@gmail.com**
+- Solenn COULON (@solennCoulon17): Data engineer -**solenn.coulon@supdevinci-edu.fr**
+- Coline TREILLE (@Coline-T) : Data analyst -**coline.treille@supdevinci-edu.fr**
 
 
 ## Licence
