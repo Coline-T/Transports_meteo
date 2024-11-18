@@ -43,28 +43,20 @@ Ces outils ont été utilisés pour le développement du projet sur les transpor
 
 
 ## Objectif du Projet
-Ce projet vise à combiner les données des transports en commun rennais avec des données de météo et des données sur la pollution de l'air 
+Ce projet vise à combiner les données des transports en commun rennais avec des données de météo et des données sur la pollution de l'air. Ces données proviennent de plusieurs API qu'on récupère tous les jours à l'aide d'un programme. Cette approche permet d'identifier des corrélations entre la météo, la fréquentation des transports et le niveau de pollution dans l'air. 
 
-
-de conformité sanitaire fournies par l'API **Alim'confiance** avec l'analyse des sentiments des **avis clients** pour offrir une vue d'ensemble de la qualité des établissements de restauration. Cette approche permettrait d'identifier des corrélations entre les évaluations sanitaires officielles et la perception des consommateurs, offrant ainsi une vision complète pour améliorer la sécurité et la satisfaction client.
 
 ## 🎭 Mes cibles
 
 Mes cibles principales incluent :
 
-- **Restaurateurs et Propriétaires de Restaurants** qui souhaitent surveiller les avis des clients en temps réel pour améliorer la satisfaction client et la qualité du service.
+- **Réseau de transports en commun rennais** qui souhaitent surveiller le bon fonctionnement de leurs transports même en cas de problèmes météorologiques.
 
-- **Gestionnaires de Chaînes de Restaurants** pour obtenir une vue d'ensemble des performances des établissements sur différents sites et agir rapidement sur les retours négatifs.
+- **Services Marketing de la Métropole rennais** qui souhaitent suivre les habitudes des usagers des transports en commun rennais.
 
-- **Services Marketing** qui souhaitent personnaliser leurs campagnes en fonction des retours clients et cibler plus efficacement les publics.
+- **Météorologistes** ???
 
-- **Plateformes de Critiques et de Réservations** qui souhaitent offrir une meilleure expérience utilisateur en filtrant et analysant les retours clients de manière plus précise.
-
-- **Consultants en Restauration** qui peuvent utiliser ces insights pour conseiller leurs clients sur l'amélioration de la qualité des services.
-
-- **Fournisseurs de Services de Livraison de Repas** qui souhaitent optimiser leur offre en fonction des avis clients sur les restaurants partenaires.
-
-- **Analystes de Données et Chercheurs** qui souhaitent étudier les tendances de consommation et les préférences des clients en matière de restauration.
+- **Analystes de Données et Chercheurs** qui souhaitent étudier les tendances de fréquentations des clients en fonction de circonstances extérieurs (exemple : météo et pollution de l'air)
 
 
 
@@ -73,8 +65,8 @@ Mes cibles principales incluent :
 ```
 .
 ├── data
-│   └── kafka_messages.csv
-├── data-ingestion-kedro
+│   └── ??
+├── data-ingestion-kedro ??
 │   ├── conf
 │   ├── data
 │   ├── notebooks
@@ -84,8 +76,17 @@ Mes cibles principales incluent :
 │   ├── session_store.db
 │   ├── src
 │   └── tests
-├── docs
-│   └── realtime_restaurant_insights_project_description.pdf.pdf
+├── Airflow
+│   ├── docker-compose.yml
+│   ├── requirements.txt+
+│   ├── dags
+│       ├── dag.py
+│   ├── script
+│       ├── entrypoint.sh
+├── data_collection
+│   ├── getAPI.py
+├── docs ??
+│   └── ...
 ├── ELK
 │   ├── docker-compose.yml
 │   └── import_to_elasticsearch.py
@@ -95,8 +96,10 @@ Mes cibles principales incluent :
 │   ├── include
 │   ├── lib
 │   ├── lib64 -> lib
+│   ├── Scripts
 │   ├── pyvenv.cfg
 │   └── share
+## Finir en fonction de ce qu'on rajoute
 ├── image-1.png
 ├── image-2.png
 ├── image-3.png
@@ -174,8 +177,8 @@ Mes cibles principales incluent :
 
 1. **Cloner le dépôt :**
    ```bash
-   git clone https://github.com/Santoudllo/realtime-restaurant-insights.git
-   cd realtime-restaurant-insights
+   git clone https://github.com/Coline-T/Transports_meteo
+   cd Transports_meteo
    ```
 
 2. **Créer un environnement virtuel :**
