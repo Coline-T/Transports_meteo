@@ -1,4 +1,4 @@
-# Projet Intégré : Fréquentation des transports en commun rennais en fonction de la météo et de la polution de l'air
+# Projet Intégré : Etat du trafic rennais en fonction de la météo
 
 ## Technologies Utilisées
 
@@ -12,7 +12,6 @@
 
 ### Cloud & Bases de Données
 
-![Airflow](...)
 ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-8.15.0-blue?logo=elasticsearch&logoColor=white)
 ![Kibana](https://img.shields.io/badge/Kibana-8.15.0-orange?logo=kibana&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-5.0-green?logo=mongodb&logoColor=white)
@@ -35,25 +34,22 @@
 ![IPython](https://img.shields.io/badge/IPython-8.0.0-blue?logo=ipython&logoColor=white)
 
 ---
-Ces outils ont été utilisés pour le développement du projet sur les transports en commun rennais, visant à ingérer, transformer, et analyser des données en temps réel pour obtenir des informations sur les habitudes des usagers des transports en commun rennais, en fonction de la météo et de la pollution. Le traitement des données en temps réel est facilité par Airflow, tandis que l'analyse des sentiments est effectuée grâce à l'API d'OpenAI, et les données sont ensuite indexées et visualisées à l'aide d'Elasticsearch et Kibana.
-
+Ces outils ont été utilisés pour le développement du projet sur l'état du trafic rennais, visant à ingérer, transformer, et analyser les données du trafic en temps réel pour obtenir des informations sur les habitudes des usagers et repérer les heures d'affluence ainsi qu'analyser pour savoir si le trafic est influencé par la météo ou non. Le traitement des données en temps réel est facilité par Airflow, ensuite nos données ont été intégrés dans un DataLake sous MongoDB.
 
 ## Objectif du Projet
-Ce projet vise à combiner les données des transports en commun rennais avec des données de météo et des données sur la pollution de l'air. Ces données proviennent de plusieurs API qu'on récupère tous les jours à l'aide d'un programme. Cette approche permet d'identifier des corrélations entre la météo, la fréquentation des transports et le niveau de pollution dans l'air. 
+Ce projet vise à analyser l’impact des conditions météorologiques et des niveaux de pollution sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents. Ce projet nous amène donc à nous demander : 
+En quoi les conditions météorologiques et les niveaux de pollution influencent-ils le trafic routier ?
 
 
 ## 🎭 Mes cibles
 
 Mes cibles principales incluent :
 
-- **Réseau de transports en commun rennais** qui souhaitent surveiller le bon fonctionnement de leurs transports même en cas de problèmes météorologiques.
+- **Réseau de route rennais** qui souhaitent surveiller le trafic sur leurs route et repérer si il y a des jours où des routes sont plus empruntés que d'autres.
 
-- **Services Marketing de la Métropole rennais** qui souhaitent suivre les habitudes des usagers des transports en commun rennais.
-
-- **Météorologistes** ???
+- **Métropole rennaise** qui souhaitent suivre si les routes sont plus ou moins empruntés certains jours ou non.
 
 - **Analystes de Données et Chercheurs** qui souhaitent étudier les tendances de fréquentations des clients en fonction de circonstances extérieurs (exemple : météo et pollution de l'air)
-
 
 
 ## Architecture du Projet 
@@ -93,6 +89,7 @@ Mes cibles principales incluent :
 │   ├── lib
 │   ├── lib64 -> lib
 │   ├── Scripts
+│       ├── creation_csv.py
 │   ├── pyvenv.cfg
 │   └── share
 ## Finir en fonction de ce qu'on rajoute
@@ -123,22 +120,21 @@ Mes cibles principales incluent :
 ```
 
 
-
 ![alt text](image.png)
 
 ### Workflow et Schéma d'Architecture
 
-1. **Ingestion des Données des transports Rennais** :
-   - Extraction des données sur les transports en commun Rennais via l'API "Etat du trafic en temps réel" disponible sur le site data rennes métropole, envoi des données dans Kafka.
+1. **Ingestion des Données de l'Etat du trafic rennais** :
+   - Extraction des données sur l'Etat du trafic Rennais en temps réel via l'API "Etat du trafic en temps réel" disponible sur le site data rennes métropole puis envoi des données dans Mongo DB.
 
 2. **Ingestion des données Météo** :
-   - Extraction des données météo via l'API disponible sur Open Weather Data et envoi des données dans Kafka.
+   - Extraction des données météo via l'API disponible sur Open Weather Data puis envoi des données dans Mongo DB.
 
 3. **Ingestion des données de la pollution de l'air** :
-   - Extraction des données de la pollution de l'air via l'API disponible sur Open Weather Data et envoi des données dans Mongo DB.
+   - Extraction des données de la pollution de l'air via l'API disponible sur Open Weather Data puis envoi des données dans Mongo DB.
 
 4. **Traitement des Données** :
-   - **Transformation des Données** : Dans MongoDB, on nettoie et enrichit les données, en ajoutant des informations telles que ...
+   - **Transformation des Données** : Dans un programme python, on va chercher nos données présentes dans nos collections mongoDB et on les ressort sous la forme d'un fichier CSV. Dans ce même programme, on traite nos données pour avoir toutes les variables nécessaires.
 
 5. **Indexation et Stockage** :
    - Les données enrichies sont stockées dans Elasticsearch, indexées par ...
@@ -147,26 +143,15 @@ Mes cibles principales incluent :
    - Kibana est utilisé pour créer des tableaux de bord interactifs, permettant de suivre l'usage des transports en commun en fonction de la météo et de la pollution de l'air.
 
 ## Fonctionnalités du Projet
-A FAIRE !!!
-1. **Suivi des Contrôles Sanitaires**
-   - **Objectif** : Fournir une vue d’ensemble des niveaux d’hygiène pour chaque établissement.
-   - **Description** : Identifier les établissements avec des niveaux "à corriger de manière urgente" ou "à améliorer" pour cibler les interventions nécessaires.
 
-2. **Analyse des Sentiments des Avis Clients**
-   - **Objectif** : Quantifier le sentiment des clients pour chaque établissement en fonction de l'expérience (service, nourriture, ambiance).
-   - **Description** : Évaluer les avis clients pour chaque aspect du service, afin d'identifier des tendances et des aspects nécessitant une amélioration.
+1. **Suivi de l'état du trafic Rennais**
+   - **Objectif** : Suivre l'état du trafic rennais avant de connaître les jours et heures d'affluence.
+   - **Description** : Il est important de suivre l'état du trafic afin de pouvoir l'améliorer en proposant des déviations aux usagers en cas de forte affluence, ce qui permet de limiter le risque d'accidents et de sur-accidents qui ont entraînés les jours de forte affluence.
 
-3. **Corrélation entre Sentiment Client et Hygiène Sanitaire**
-   - **Objectif** : Identifier les corrélations entre la satisfaction des clients et le niveau de conformité sanitaire.
-   - **Description** : Analyser si les établissements avec de meilleures pratiques sanitaires obtiennent des avis plus positifs, ou si un mauvais niveau d'hygiène entraîne une perception négative dans les avis.
+2. **Corrélation entre l'état du trafic Rennais et la météo sur une même période**
+   **Objectif** : Analyser l’impact des conditions météorologiques et des niveaux de pollution sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents.
+   - **Description** : Les conditions météorologiques et la pollution influencent directement le trafic routier, impactant la sécurité, la fluidité et les comportements des usagers. Analyser ces interactions permettrait d’optimiser la gestion de la mobilité urbaine.
 
-4. **Analyse Géographique et Temporelle**
-   - **Objectif** : Identifier les zones géographiques avec des tendances sanitaires ou de satisfaction particulières, ainsi que l’évolution de la perception des établissements au fil du temps.
-   - **Description** : Créer des cartes géographiques dans Kibana pour visualiser les établissements à risque et les sentiments des clients par région.
-
-5. **Rapports et Indicateurs de Qualité**
-   - **Objectif** : Créer des rapports consolidés sur la qualité globale des établissements et générer des indicateurs (ex. score de conformité, score de satisfaction).
-   - **Description** : Agréger les scores de conformité et de satisfaction pour chaque établissement pour créer un tableau de classement des restaurants.
 
 ## Déroulement Technique du Projet
 
@@ -221,7 +206,7 @@ Ce pipeline collecte les données brutes à partir de l'API, les transforme via 
    ```
 
 ### Extraction et Ingestion
-   - **Données des différents API** : Extraction des données sanitaires avec Python et envoi dans Kafka.
+   - **Données des différents API** : Extraction des données sanitaires avec Python et envoi dans MongoDB.
 
 ### Stockage et Indexation avec Elasticsearch
    - Stockage des données des transports rennais, des données météo et des données de la pollution de l'air dans Elasticsearch.
@@ -230,12 +215,12 @@ Ce pipeline collecte les données brutes à partir de l'API, les transforme via 
    - Création de tableaux de bord pour :
      - ...
 
-## Analyses et Indicateurs Attendus
+## Analyses et Indicateurs Attendus ---> A FAIRE
 
-1. **Indice de Conformité et de Satisfaction** : Calculer un score global pour chaque établissement en fonction de la conformité sanitaire et des sentiments clients.
-2. **Corrélations entre Hygiène et Sentiment** : Identifier si les établissements mal notés pour leur hygiène ont aussi des avis négatifs des clients.
-3. **Zones à Risque** : Localiser les zones géographiques où les niveaux d'hygiène et les avis clients sont insatisfaisants.
-4. **Tendances Temporelles** : Analyser l’évolution dans le temps des niveaux de satisfaction et des niveaux d’hygiène.
+1. **...** : ...
+2. **...** : ...
+3. **...** : ...
+4. **...** : ...
 
 ## Exemples de Cas d'Usage
 

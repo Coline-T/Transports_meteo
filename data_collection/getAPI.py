@@ -38,17 +38,7 @@ class TrafficStatus:
     def __repr__(self):
         return self.status
 
-# Exemple d'usage :
-record = TrafficRecord(
-    datetime="2024-10-24T10:30:00",
-    location_id="12345_D",
-    avg_speed=60,
-    travel_time=120,
-    reliability=95,
-    status=TrafficStatus("freeFlow")
-)
 
-print(record)
 
 
 
