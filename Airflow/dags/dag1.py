@@ -1,35 +1,33 @@
-from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+# Import necessary libraries
+from Airflow import DAG
+from Airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
+ 
 import subprocess
  
-# Définir les arguments par défaut du DAG
-default_args = {
-    'owner': 'airflow',
-    'depends_on_past': False,
-    'start_date': datetime(2024, 11, 1),  # Ajustez la date de début
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
-}
- 
-# Définir le DAG
-dag = DAG(
-    'sentiment_analysis_kafka_dag',
-    default_args=default_args,
-    description='Envoi des avis clients dans Kafka toutes les 8 heures',
-    schedule_interval='0 */8 * * *',  # Exécution toutes les 8 heures
-)
- 
-# Fonction pour exécuter le script sentiment_analysis.py
-def run_sentiment_analysis():
+# Define a function to run the Python script
+def run_trafic_api():
+    # Path to your Python file
+    script_path = 'C:\Users\cocop\Desktop\SUP DE VINCI\Entrepôt de données\Transports_meteo\data_collection\getAPI.py'
+    # Using subprocess to run the Python script
     try:
-        subprocess.run(['python3', '/home/santoudllo/Desktop/PROJETS/realtime-restaurant-insights/sentiment_analysis_kafka/sentiment_analysis.py'], check=True)
+        subprocess.run(['python', script_path], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Erreur lors de l'exécution du script : {e}")
  
-# Définir la tâche pour exécuter le script Python
-run_sentiment_analysis_task = PythonOperator(
-    task_id='run_sentiment_analysis',
-    python_callable=run_sentiment_analysis,
-    dag=dag,
+ 
+# Define the DAG
+dag = DAG(
+    'Conso_API_dag',                 # DAG ID
+    description='get data from the Infoclimat API and load it in MongoDB',   # Description
+    schedule_interval='0 */1 * * *',               # Schedule interval (runs once per hour) '@daily'
+    start_date=datetime(2024, 1, 1),           # Start date (start running from this date)
+    catchup=False                              # Whether to backfill missing DAG runs
 )
+ 
+run_trafic_api_task = PythonOperator(
+    task_id='run_trafic_api',
+    python_callable=run_trafic_api,             # Function to run
+    dag=dag
+)
+ 
