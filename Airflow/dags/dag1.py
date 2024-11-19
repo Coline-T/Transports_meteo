@@ -19,7 +19,7 @@ def run_trafic_api():
 # Define the DAG
 dag = DAG(
     'Conso_API_dag',                 # DAG ID
-    description='get data from the Infoclimat API and load it in MongoDB',   # Description
+    description='get data from the trafic API and load it in MongoDB',   # Description
     schedule_interval='0 */1 * * *',               # Schedule interval (runs once per hour) '@daily'
     start_date=datetime(2024, 1, 1),           # Start date (start running from this date)
     catchup=False                              # Whether to backfill missing DAG runs
