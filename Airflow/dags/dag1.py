@@ -8,7 +8,7 @@ import subprocess
 # Define a function to run the Python script
 def run_trafic_api():
     # Path to your Python file
-    script_path = 'C:\\Users\cocop\Desktop\SUP DE VINCI\Entrepôt de données\Transports_meteo\data_collection\getAPI.py'
+    script_path = 'C:\Users\cocop\Desktop\SUP DE VINCI\Entrepôt de données\Transports_meteo\data_collection\getAPI.py'
     # Using subprocess to run the Python script
     try:
         subprocess.run(['python', script_path], check=True)
