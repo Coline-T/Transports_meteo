@@ -34,7 +34,7 @@
 ![IPython](https://img.shields.io/badge/IPython-8.0.0-blue?logo=ipython&logoColor=white)
 
 ---
-Ces outils ont été utilisés pour le développement du projet sur l'état du trafic rennais, visant à ingérer, transformer, et analyser les données du trafic en temps réel pour obtenir des informations sur les habitudes des usagers et repérer les heures d'affluence ainsi qu'analyser pour savoir si le trafic est influencé par la météo ou non. Le traitement des données en temps réel est facilité par Airflow, ensuite nos données ont été intégrés dans un DataLake sous MongoDB.
+Ces outils ont été utilisés pour le développement du projet sur l'état du trafic rennais, visant à ingérer, transformer, et analyser les données du trafic en temps réel pour obtenir des informations sur les habitudes des usagers et repérer les heures d'affluence ainsi qu'analyser pour savoir si le trafic est influencé par la météo ou non. Le traitement des données en temps réel est facilité par des dags Airflow, ensuite nos données ont été intégrés dans un DataLake sous MongoDB. Ces données ont par la suite été traités sous python, avant d'être importés dans Kibana pour les utiliser dans des visualisations. 
 
 ## Objectif du Projet
 Ce projet vise à analyser l’impact des conditions météorologiques et des niveaux de pollution sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents. Ce projet nous amène donc à nous demander : 
@@ -45,29 +45,14 @@ En quoi les conditions météorologiques et les niveaux de pollution influencent
 
 Mes cibles principales incluent :
 
-- **Réseau de route rennais** qui souhaitent surveiller le trafic sur leurs route et repérer si il y a des jours où des routes sont plus empruntés que d'autres.
+- **Métropole rennaise** qui souhaitent suivre si les routes sont plus ou moins empruntés certains jours ou non afin de pouvoir améliorer la mobilité urbaine. De plus, comme les données concernant le trafic rennais sont mis en lien avec la météo, la métropole pourra également connaître les impacts de la météo sur leurs routes et le trafic et prendre des mesures afin de limiter le nombre d'accidents.
 
-- **Métropole rennaise** qui souhaitent suivre si les routes sont plus ou moins empruntés certains jours ou non.
-
-- **Analystes de Données et Chercheurs** qui souhaitent étudier les tendances de fréquentations des clients en fonction de circonstances extérieurs (exemple : météo et pollution de l'air)
-
+- **Analystes de Données et Chercheurs** qui souhaitent étudier les conséquences de circonstances extérieurs tel que la météo sur le trafic rennais.
 
 ## Architecture du Projet 
 
 ```
 .
-├── data
-│   └── ??
-├── data-ingestion-kedro ??
-│   ├── conf
-│   ├── data
-│   ├── notebooks
-│   ├── pyproject.toml
-│   ├── README.md
-│   ├── requirements.txt
-│   ├── session_store.db
-│   ├── src
-│   └── tests
 ├── Airflow
 │   ├── docker-compose.yml
 │   ├── requirements.txt+
@@ -77,8 +62,6 @@ Mes cibles principales incluent :
 │       ├── entrypoint.sh
 ├── data_collection
 │   ├── getAPI.py
-├── docs ??
-│   └── ...
 ├── ELK
 │   ├── docker-compose.yml
 │   └── import_to_elasticsearch.py
@@ -89,37 +72,20 @@ Mes cibles principales incluent :
 │   ├── lib
 │   ├── lib64 -> lib
 │   ├── Scripts
-│       ├── creation_csv.py
+│       ├── activate.bat
+│       ├── API_meteo.py
+│       ├── API_pollution.py
+│       ├── connexion_mongodb.py
+│       ├── creation_traitement_csv.py
 │   ├── pyvenv.cfg
-│   └── share
-## Finir en fonction de ce qu'on rajoute
-├── image-1.png
-├── image-2.png
-├── image-3.png
-├── image-4.png
-├── image.png
-├── kafka
-├── kedro-airflow
-│   ├── dags
-│   ├── docker-compose.yml
-│   ├── requirements.txt
-│   └── script
-├── notebook
-│   └── EDA.ipynb
+├── .env
+├── .gitignore
+├── dag.png
+├── elasticsearch.png
+├── kibana.png
+├── schema.png
 ├── README.md
-├── script
-│   ├── getApi_Alim.py
-│   └── preprocessing.py
-├── sentiment_analysis_kafka
-│   ├── docker-compose.yml
-│   ├── requirements.txt
-│   └── sentiment_analysis.py
-└── spark
-    ├── kafka_to_spark.py
-    └── script
 ```
-
-
 ![alt text](image.png)
 
 ### Workflow et Schéma d'Architecture
@@ -130,17 +96,14 @@ Mes cibles principales incluent :
 2. **Ingestion des données Météo** :
    - Extraction des données météo via l'API disponible sur Open Weather Data puis envoi des données dans Mongo DB.
 
-3. **Ingestion des données de la pollution de l'air** :
-   - Extraction des données de la pollution de l'air via l'API disponible sur Open Weather Data puis envoi des données dans Mongo DB.
+3. **Traitement des Données** :
+   - **Transformation des Données** : Dans un programme python, on va chercher nos données présentes dans nos collections mongoDB et on les ressort sous la forme d'un fichier CSV. Dans ce même programme, on traite nos données pour avoir des variables nécessaires à nos visualisations et des données propres. Par la suite, on a fusionné nos deux fichiers d'API en un seul fichier pour faciliter les visualisations.
 
-4. **Traitement des Données** :
-   - **Transformation des Données** : Dans un programme python, on va chercher nos données présentes dans nos collections mongoDB et on les ressort sous la forme d'un fichier CSV. Dans ce même programme, on traite nos données pour avoir toutes les variables nécessaires.
+4. **Indexation et Stockage** :
+   - Notre fichier de données est ensuite stockées dans ElasticSearch, indexées par date.
 
-5. **Indexation et Stockage** :
-   - Les données enrichies sont stockées dans Elasticsearch, indexées par ...
-
-6. **Visualisation et Analyse** :
-   - Kibana est utilisé pour créer des tableaux de bord interactifs, permettant de suivre l'usage des transports en commun en fonction de la météo et de la pollution de l'air.
+5. **Visualisation et Analyse** :
+   - Kibana est utilisé pour créer des tableaux de bord interactifs, permettant de suivre l'état du trafic rennais en fonction de la météo.
 
 ## Fonctionnalités du Projet
 
@@ -191,29 +154,22 @@ KAFKA_TOPIC="*******"
 
 ### Sous-Projet : Ingestion et Préparation des Données
 
-Cette partie du projet est un sous-projet spécifique à l'ingestion et à la préparation des données, inclus dans notre projet global Transports_Meteo. Deux pipelines Kedro ont été mis en place pour gérer ces données et les rendre disponibles pour l'analyse et la visualisation :
-
-#### Pipeline ETL
-
-Ce pipeline collecte les données brutes à partir de l'API, les transforme via des étapes de nettoyage et d'enrichissement, puis les stocke dans une base de données MongoDB. Le stockage dans MongoDB permet de centraliser les données transformées pour une utilisation ultérieure, facilitant ainsi les opérations d'analyse et de visualisation.
-
-![alt text](image-4.png)
-
-### **Exécuter localement :**
-- **Exécuter tous les pipelines :**
-   ```bash
-   kedro run
-   ```
+Cette partie du projet est un sous-projet spécifique à l'ingestion et à la préparation des données, inclus dans notre projet global Transports_Meteo.
 
 ### Extraction et Ingestion
    - **Données des différents API** : Extraction des données sanitaires avec Python et envoi dans MongoDB.
+
+### Traitement des données
+   - **Traitement des données sous Python** : Les données stockées dans MongoDB sont traités et transformés sous python.
 
 ### Stockage et Indexation avec Elasticsearch
    - Stockage des données des transports rennais, des données météo et des données de la pollution de l'air dans Elasticsearch.
 
 ### Visualisation avec Kibana
    - Création de tableaux de bord pour :
-     - ...
+      - Mesure de l'affluence (voir si le trafic est plus souvent bouché ou libre)
+      - Analyser la vitesse et le type du trafic en temps de pluie
+      - ...
 
 ## Analyses et Indicateurs Attendus ---> A FAIRE
 
@@ -224,13 +180,13 @@ Ce pipeline collecte les données brutes à partir de l'API, les transforme via 
 
 ## Exemples de Cas d'Usage
 
-- **Pour les autorités** : Prioriser les contrôles dans les zones ou établissements avec des niveaux d'hygiène et de satisfaction faible.
-- **Pour les restaurateurs** : Identifier les aspects (hygiène ou service) à améliorer pour répondre aux attentes des clients.
-- **Pour les analystes** : Suivre les tendances régionales en matière de conformité sanitaire et de satisfaction client.
+- **Pour la métropole rennaise** : Suivre l'état du trafic rennais pour connaître les périodes où les routes sont le plus empruntés, tout en mettant ses données en lien avec la météo du moment afin de pouvoir améliorer la mobilité urbaine mais aussi réduire le nombre d'accidents.
+- **Pour les usagers des routes** : Les usagers pourront connaître les moments où il est déconseillé d'emprunter certaines routes car bouché mais aussi connaître les impacts de la météo sur le trafic. 
+- **Pour les analystes** : Suivre les conséquences de circonstances extérieurs tel que la météo sur le trafic rennais.
 
 ## Déploiement
 
-- **Docker** : Conteneurisation des services (Kafka, Spark, Elasticsearch, Kibana) pour simplifier le déploiement et le scaling.
+- **Docker** : Conteneurisation des services (Elasticsearch, Kibana) pour simplifier le déploiement.
 - **Configurations** : Variables d’API et paramètres de stockage configurables via des fichiers `.env`.
 - **Automatisation** : Script de déploiement pour exécuter le pipeline complet.
 
@@ -239,11 +195,9 @@ Ce pipeline collecte les données brutes à partir de l'API, les transforme via 
 
 Les données collectées et importées dans Elasticsearch  sont visualisées dans Kibana pour une analyse approfondie. Voici un aperçu de certaines visualisations créées pour explorer les avis clients et leurs sentiments.
 
-![alt text](image-6.png)
+![alt text](tableau_de_bord.png)
 
-![alt text](image-5.png)
-
-
+![alt text](kibana1.png)
 
 ##  📜 Conclusion <a name="conclusion"></a>
 
@@ -261,25 +215,14 @@ En somme, l’application "Realtime Restaurant Insights" se positionne comme un 
 
 🚧 Difficultés Rencontrées
 
-- **Quota Limité pour l'API d'OpenAI** 
-Une des principales difficultés rencontrées concernait l'utilisation de l'API d'OpenAI pour l'analyse des sentiments. L'accès à l'API est limité par un quota d'utilisation, ce qui a parfois restreint le traitement de grands volumes de données en temps réel. Ce quota a nécessité des ajustements dans la fréquence des appels API et une priorisation des avis clients à analyser, surtout en période de forte activité. En conséquence, une stratégie de gestion de quota a dû être mise en place, impliquant notamment la mise en cache des résultats et l'utilisation sélective de l'API pour les avis les plus pertinents.
+- **...** 
+....
 
 ![alt text](image-1.png)
 
-## Améliorations Futures
-
-1. **Machine Learning pour la prédiction des niveaux de conformité** : Utilisation de modèles pour anticiper les besoins d'inspection.
-2. **Intégration d'autres sources d'avis (réseaux sociaux)** : Agrégation d'avis de sources variées pour enrichir les données.
-3. **Développement d’une API** : Fournir un accès en temps réel aux indicateurs de qualité des établissements pour des applications externes.
-
----
-
-##  📊 Docs <a name="documentation"></a>
-j'ai documenté plusieurs étapes critiques du projet :
-
 **Airflow**  est utilisé pour orchestrer les pipelines de collecte de données via des DAGs. Un exemple de DAG est utilisé pour envoyer nos données de MongoDB vers Kafka. Ce script Airflow s'exécute toutes les 8 heures. Voici une images du  DAG :
 
-![alt text](image-3.png)
+![alt text](dag.png)
 
 ## Contributeurs
 
