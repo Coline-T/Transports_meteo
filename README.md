@@ -169,12 +169,10 @@ Cette partie du projet est un sous-projet spécifique à l'ingestion et à la pr
       - Analyser la vitesse moyenne des usagers en fonction du statut du trafic et du niveau moyen de la pluie
       - Analyser la vitesse moyenne des usagers en fonction du statut du trafic et du niveau de visibilité moyen
 
-## Analyses et Indicateurs Attendus ---> A FAIRE
+## Analyses et Indicateurs Attendus 
 
-1. **...** : ...
-2. **...** : ...
-3. **...** : ...
-4. **...** : ...
+1. **Vitesse moyenne en fonction du statut du trafic et du niveau de la pluie** 
+2. **Vitesse moyenne en fonction du statut du trafic et du niveau de visibilité moyenne** 
 
 ## Exemples de Cas d'Usage
 
@@ -208,9 +206,7 @@ Ce projet a montré que les conditions météorologiques influencent le trafic r
 
 ![alt text](image-1.png)
 
-**Airflow**  est utilisé pour orchestrer les pipelines de collecte de données via des DAGs. On a voulu créer un DAG nous permettant d'aller extraire nos données de l'API, de les importer dans MongoDB puis de les extraire sous CSV. Voici une image du  DAG :
-
-![alt text](dag.png)
+**Airflow**  est utilisé pour orchestrer les pipelines de collecte de données via des DAGs. On a voulu créer un DAG nous permettant d'aller extraire nos données de l'API, de les importer dans MongoDB puis de les extraire sous CSV. 
 
 ## Contributeurs
 
