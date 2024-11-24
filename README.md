@@ -37,7 +37,7 @@
 Ces outils ont été utilisés pour le développement du projet sur l'état du trafic rennais, visant à ingérer, transformer, et analyser les données du trafic en temps réel pour obtenir des informations sur les habitudes des usagers et repérer les heures d'affluence ainsi qu'analyser pour savoir si le trafic est influencé par la météo ou non. Le traitement des données en temps réel est facilité par des dags Airflow, ensuite nos données ont été intégrés dans un DataLake sous MongoDB. Ces données ont par la suite été traités sous python, avant d'être importés dans Kibana pour les utiliser dans des visualisations. 
 
 ## Objectif du Projet
-Ce projet vise à analyser l’impact des conditions météorologiques et des niveaux de pollution sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents. L'objectif serait de pouvoir proposer une solution à Rennes métropole afin de prédire les prochains problèmes de mobilité sur les 5 prochains jours. 
+Ce projet vise à analyser l’impact des conditions météorologiques sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents. L'objectif serait de pouvoir proposer une solution à Rennes métropole afin de prédire les prochains problèmes de mobilité sur les 5 prochains jours. 
 Ce projet nous amène donc à nous demander : En quoi les conditions météorologiques influencent-ils le trafic routier ?
 
 ## 🎭 Mes cibles
@@ -110,8 +110,8 @@ Mes cibles principales incluent :
    - **Description** : Il est important de suivre l'état du trafic afin de pouvoir l'améliorer en proposant des déviations aux usagers en cas de forte affluence, ce qui permet de limiter le risque d'accidents et de sur-accidents qui ont entraînés les jours de forte affluence.
 
 2. **Corrélation entre l'état du trafic Rennais et la météo sur une même période**
-   **Objectif** : Analyser l’impact des conditions météorologiques et des niveaux de pollution sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents.
-   - **Description** : Les conditions météorologiques et la pollution influencent directement le trafic routier, impactant la sécurité, la fluidité et les comportements des usagers. Analyser ces interactions permettrait d’optimiser la gestion de la mobilité urbaine.
+   **Objectif** : Analyser l’impact des conditions météorologiques sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents.
+   - **Description** : Les conditions météorologiques influencent directement le trafic routier, impactant la sécurité, la fluidité et les comportements des usagers. Analyser ces interactions permettrait d’optimiser la gestion de la mobilité urbaine.
 
 
 ## Déroulement Technique du Projet
@@ -202,7 +202,7 @@ Ce projet a montré que les conditions météorologiques influencent le trafic r
 - **Format de l'API** 
    Difficultés rencontrées lors de la récupération des données.
 - **Utilisation de nouveau logiciel**
-   Nous avons rencontré 5 nouveaux logiciels, ce qui nous a fait perdre beaucoup de temps comme nous avons du comprendre  leurs fonctionnements.
+   Nous avons rencontré 5 nouveaux logiciels, ce qui nous a fait perdre beaucoup de temps comme nous avons du comprendre leurs fonctionnements.
 
 **Airflow**  est utilisé pour orchestrer les pipelines de collecte de données via des DAGs. On a voulu créer un DAG nous permettant d'aller extraire nos données de l'API, de les importer dans MongoDB puis de les extraire sous CSV. 
 
