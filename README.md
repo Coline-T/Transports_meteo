@@ -37,9 +37,8 @@
 Ces outils ont été utilisés pour le développement du projet sur l'état du trafic rennais, visant à ingérer, transformer, et analyser les données du trafic en temps réel pour obtenir des informations sur les habitudes des usagers et repérer les heures d'affluence ainsi qu'analyser pour savoir si le trafic est influencé par la météo ou non. Le traitement des données en temps réel est facilité par des dags Airflow, ensuite nos données ont été intégrés dans un DataLake sous MongoDB. Ces données ont par la suite été traités sous python, avant d'être importés dans Kibana pour les utiliser dans des visualisations. 
 
 ## Objectif du Projet
-Ce projet vise à analyser l’impact des conditions météorologiques et des niveaux de pollution sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents. Ce projet nous amène donc à nous demander : 
-En quoi les conditions météorologiques et les niveaux de pollution influencent-ils le trafic routier ?
-
+Ce projet vise à analyser l’impact des conditions météorologiques et des niveaux de pollution sur le trafic routier afin de proposer des solutions pour améliorer la gestion de la mobilité, réduire les congestions et limiter les risques d’accidents. L'objectif serait de pouvoir proposer une solution à Rennes métropole afin de prédire les prochains problèmes de mobilité sur les 5 prochains jours. 
+Ce projet nous amène donc à nous demander : En quoi les conditions météorologiques influencent-ils le trafic routier ?
 
 ## 🎭 Mes cibles
 
@@ -55,7 +54,7 @@ Mes cibles principales incluent :
 .
 ├── Airflow
 │   ├── docker-compose.yml
-│   ├── requirements.txt+
+│   ├── requirements.txt
 │   ├── dags
 │       ├── dag.py
 │   ├── script
@@ -80,13 +79,12 @@ Mes cibles principales incluent :
 │   ├── pyvenv.cfg
 ├── .env
 ├── .gitignore
-├── dag.png
 ├── elasticsearch.png
-├── kibana.png
+├── tableau_de_bord.png
 ├── schema.png
 ├── README.md
 ```
-![alt text](image.png)
+![alt text](schema.png)
 
 ### Workflow et Schéma d'Architecture
 
@@ -147,9 +145,10 @@ MONGO_PASSWORD="******"
 MONGO_DBNAME="*******"
 MONGO_URI="*********"
 API_URL=https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/etat-du-trafic-en-temps-reel/records
-OPENAI_API_KEY="*******"
-KAFKA_BROKER=localhost:9092"******"
-KAFKA_TOPIC="*******"
+API_KEY_pollution='*********'
+URL_Met=f'https://api.openweathermap.org/data/2.5/forecast?lat=48.1113387&lon=-1.6800198&appid=*********'
+URL_Pol=f'http://api.openweathermap.org/data/2.5/air_pollution?lat=48.1115&lon=-1.678&appid=************'
+API_KEY_MET='*********'
    ```
 
 ### Sous-Projet : Ingestion et Préparation des Données
@@ -167,9 +166,8 @@ Cette partie du projet est un sous-projet spécifique à l'ingestion et à la pr
 
 ### Visualisation avec Kibana
    - Création de tableaux de bord pour :
-      - Mesure de l'affluence (voir si le trafic est plus souvent bouché ou libre)
-      - Analyser la vitesse et le type du trafic en temps de pluie
-      - ...
+      - Analyser la vitesse moyenne des usagers en fonction du statut du trafic et du niveau moyen de la pluie
+      - Analyser la vitesse moyenne des usagers en fonction du statut du trafic et du niveau de visibilité moyen
 
 ## Analyses et Indicateurs Attendus ---> A FAIRE
 
@@ -195,32 +193,22 @@ Cette partie du projet est un sous-projet spécifique à l'ingestion et à la pr
 
 Les données collectées et importées dans Elasticsearch  sont visualisées dans Kibana pour une analyse approfondie. Voici un aperçu de certaines visualisations créées pour explorer les avis clients et leurs sentiments.
 
-![alt text](tableau_de_bord.png)
-
-![alt text](kibana1.png)
+![alt text](graph.png)
 
 ##  📜 Conclusion <a name="conclusion"></a>
 
-L'application Realtime Restaurant Insights s'est avérée être un atout considérable pour les acteurs de la restauration cherchant à comprendre et à exploiter les retours clients en temps réel. Grâce à l'intégration harmonieuse d'outils tels que Kafka pour l’ingestion de données en temps réel, Apache Spark pour le traitement, et Elasticsearch et Kibana pour l’indexation et la visualisation, l'application permet une exploitation rapide et efficace des données critiques.
-
-Cette solution offre aux restaurateurs une capacité inédite de suivre la satisfaction client, d’identifier les problématiques de manière proactive, et de mettre en œuvre des actions correctives immédiates. Les gestionnaires de chaînes peuvent obtenir une vue d’ensemble de leurs multiples établissements, facilitant une gestion centralisée tout en gardant un œil sur chaque restaurant. Cette vision consolidée améliore non seulement la qualité du service, mais permet aussi une prise de décision fondée sur des informations vérifiées et actuelles.
-
-En utilisant l’API d’OpenAI pour analyser les sentiments des avis clients, l'application est capable de transformer de simples commentaires en indicateurs concrets, fournissant des insights sur les aspects positifs et négatifs du service et des produits. Cela aide non seulement à rehausser l'expérience client, mais permet également aux équipes marketing d’orienter leurs stratégies de manière plus personnalisée et pertinente.
-
-Les fonctionnalités de visualisation des données, avec Kibana, apportent une dimension interactive qui permet de transformer des volumes importants de données en tableaux de bord intuitifs. Ces visualisations permettent aux utilisateurs d'explorer les tendances, de suivre la satisfaction des clients en temps réel, et de prendre des décisions éclairées.
-
-En somme, l’application "Realtime Restaurant Insights" se positionne comme un outil essentiel pour quiconque souhaite rester compétitif dans le secteur de la restauration. Elle aide à optimiser la satisfaction client, améliorer la qualité des services, et exploiter les retours clients de manière constructive. En mettant la donnée au centre de la prise de décision, cette solution représente une avancée majeure vers une gestion proactive et axée sur les résultats pour le secteur de la restauration.
-
-
+Ce projet a montré que les conditions météorologiques influencent le trafic routier. L'analyse de ces facteurs permet de mieux comprendre les pics de congestion et les comportements des conducteurs, offrant ainsi des pistes pour améliorer la gestion du trafic, réduire les risques d'accidents et favoriser une mobilité plus durable.​
 
 🚧 Difficultés Rencontrées
 
-- **...** 
-....
+- **Format de l'API** 
+   Difficultés rencontrées lors de la récupération des données.
+- **Utilisation de nouveau logiciel**
+   Nous avons rencontré 5 nouveaux logiciels, ce qui nous a fait perdre beaucoup de temps comme nous avons du comprendre  leurs fonctionnements.
 
 ![alt text](image-1.png)
 
-**Airflow**  est utilisé pour orchestrer les pipelines de collecte de données via des DAGs. Un exemple de DAG est utilisé pour envoyer nos données de MongoDB vers Kafka. Ce script Airflow s'exécute toutes les 8 heures. Voici une images du  DAG :
+**Airflow**  est utilisé pour orchestrer les pipelines de collecte de données via des DAGs. On a voulu créer un DAG nous permettant d'aller extraire nos données de l'API, de les importer dans MongoDB puis de les extraire sous CSV. Voici une image du  DAG :
 
 ![alt text](dag.png)
 
