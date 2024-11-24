@@ -204,8 +204,6 @@ Ce projet a montré que les conditions météorologiques influencent le trafic r
 - **Utilisation de nouveau logiciel**
    Nous avons rencontré 5 nouveaux logiciels, ce qui nous a fait perdre beaucoup de temps comme nous avons du comprendre  leurs fonctionnements.
 
-![alt text](image-1.png)
-
 **Airflow**  est utilisé pour orchestrer les pipelines de collecte de données via des DAGs. On a voulu créer un DAG nous permettant d'aller extraire nos données de l'API, de les importer dans MongoDB puis de les extraire sous CSV. 
 
 ## Contributeurs
